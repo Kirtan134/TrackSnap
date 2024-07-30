@@ -4,7 +4,7 @@
       {
         "src": "app.js",
         "use": "@vercel/node",
-        "config": { "includeFiles": ["views/**", "public/**"] } // Ensure all necessary files are included
+        "config": { "includeFiles": ["views/**", "public/**"] }
       }
     ],
     "routes": [
