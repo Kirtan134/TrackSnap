@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+html,body{
+    width: 100%;
+    height: 100%;
+}
+
+#map{
+    width: 100%;
+    height: 100%;
+}
+
+.landing-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: top;
+    margin-top: 20vh;
+    height: 100vh;
+}
+.landing-container h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+.landing-container p {
+    font-size: 1.5em;
+    margin-bottom: 40px;
+    text-align: center;
+    max-width: 600px;
+}
+.landing-container .btn {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: black;
+    color: #fff;
+    border: none;
+    border-radius: 100px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+body {
+    background-image: url('/static/images/map1-min.jpg'); /* Path to your background image */
+    background-size: cover;
+    background-position: top;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* For parallax effect */
+}
+
+@keyframes fade-in {
+    0% { opacity: 0; transform: translateY(-10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-up {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fade-in 1s ease-out;
+}
+
+.animate-slide-up {
+    animation: slide-up 1s ease-out;
+}
