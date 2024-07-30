@@ -40,3 +40,4 @@ jspm_packages/
 
 # Tailwind CSS build artifacts
 public/css/tailwind.css
+.vercel
