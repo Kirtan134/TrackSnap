@@ -6,7 +6,13 @@ const path = require('path');
 
 const server = http.createServer(app);
 
-const io = socket(server);
+const io = socket(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
+});
+
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views')); 
