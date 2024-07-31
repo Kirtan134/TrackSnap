@@ -67,3 +67,7 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 ## Acknowledgements
 
 - Thanks to the developers of [Node.js](https://nodejs.org/), [Express.js](https://expressjs.com/), [Socket.io](https://socket.io/), [Leaflet](https://leafletjs.com/), and [EJS](https://ejs.co/) for their great tools and libraries.
+
+## Notice
+
+Please be aware that the free web service on Render spins down if it goes 15 minutes without receiving any inbound traffic. When the service receives a new request, it will spin back up, which can take up to a minute. During this time, you may experience a noticeable delay, such as a browser page load hanging temporarily.
