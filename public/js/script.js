@@ -39,9 +39,9 @@ const customIcon = L.icon({
 });
 
 socket.on('receiveLocation', (data) => {
-    console.log(data);
+    // console.log(data);
     const {id, myname, latitude, longitude} = data;
-    console.log(`Received location for ${name} at [${latitude}, ${longitude}]`);
+    // console.log(`Received location for ${name} at [${latitude}, ${longitude}]`);
     map.setView([latitude, longitude], 20);
     if(marker[id]){
         marker[id].setLatLng([latitude, longitude]);
