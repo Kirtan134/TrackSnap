@@ -18,7 +18,51 @@ if (navigator.geolocation) {
 }
 
 const map = L.map("map").setView([0, 0], 10);
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+
+// Map layers for light and dark mode
+const lightLayer = L.tileLayer(
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+);
+const darkLayer = L.tileLayer(
+  "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+);
+
+let isDarkMode = false;
+lightLayer.addTo(map);
+
+// Dark mode toggle function
+function toggleDarkMode() {
+  const toggleButton = document.getElementById("darkModeToggle");
+
+  if (isDarkMode) {
+    // Switch to light mode
+    map.removeLayer(darkLayer);
+    lightLayer.addTo(map);
+    if (toggleButton) toggleButton.textContent = "🌙";
+    isDarkMode = false;
+    localStorage.setItem("darkMode", "false");
+  } else {
+    // Switch to dark mode
+    map.removeLayer(lightLayer);
+    darkLayer.addTo(map);
+    if (toggleButton) toggleButton.textContent = "☀️";
+    isDarkMode = true;
+    localStorage.setItem("darkMode", "true");
+  }
+}
+
+// Load saved preference after DOM loads
+document.addEventListener("DOMContentLoaded", () => {
+  const toggleButton = document.getElementById("darkModeToggle");
+  if (toggleButton) {
+    toggleButton.addEventListener("click", toggleDarkMode);
+
+    // Apply saved dark mode preference
+    if (localStorage.getItem("darkMode") === "true") {
+      toggleDarkMode();
+    }
+  }
+});
 
 const markers = {};
 const accuracyCircles = {};
