@@ -1,62 +1,45 @@
 const socket = io();
+let currentUserId = null;
 
-socket.on('connect', () => {
-    console.log('Connected to server');
+socket.on("connect", () => {
+  currentUserId = socket.id;
 });
 
-const myname = prompt("Enter your name");
-
-
-if(navigator.geolocation){
-    navigator.geolocation.watchPosition((position)=> {
-        const {latitude, longitude} = position.coords;
-        socket.emit('sendLocation', {latitude, longitude, myname});
-    }, (error) => {
-        console.log(error);
-    },
-    {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0 //no cacheing
-    });
-
+let myname = prompt("Enter your name");
+if (!myname || myname.trim() === "") {
+  myname = "Anonymous User";
 }
 
-const map = L.map("map").setView([0, 0], 20);
+if (navigator.geolocation) {
+  navigator.geolocation.watchPosition((position) => {
+    const { latitude, longitude } = position.coords;
+    socket.emit("sendLocation", { latitude, longitude, myname });
+  });
+}
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "© Kirtan Parikh"
-}).addTo(map);  
+const map = L.map("map").setView([0, 0], 10);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
-const marker = {};
+const markers = {};
 
-// Define a custom icon
-const customIcon = L.icon({
-    iconUrl: '/images/map-pin.png', // Replace with the path to your custom icon
-    iconSize: [38, 38], // Size of the icon
-    iconAnchor: [22, 38], // Point of the icon which will correspond to marker's location
-    popupAnchor: [-3, -76] // Point from which the popup should open relative to the iconAnchor
+socket.on("receiveLocation", (data) => {
+  const { id, myname, latitude, longitude } = data;
+
+  if (id === currentUserId) {
+    map.setView([latitude, longitude], 15);
+  }
+
+  if (markers[id]) {
+    markers[id].setLatLng([latitude, longitude]);
+  } else {
+    markers[id] = L.marker([latitude, longitude]).addTo(map);
+    markers[id].bindPopup(myname);
+  }
 });
 
-socket.on('receiveLocation', (data) => {
-    // console.log(data);
-    const {id, myname, latitude, longitude} = data;
-    // console.log(`Received location for ${name} at [${latitude}, ${longitude}]`);
-    map.setView([latitude, longitude], 20);
-    if(marker[id]){
-        marker[id].setLatLng([latitude, longitude]);
-        marker[id].bindPopup(myname).openPopup();
-    }
-    else{
-        marker[id] = L.marker([latitude, longitude], { icon: customIcon }).addTo(map);
-        marker[id].bindPopup(myname).openPopup();
-    }
-});
-
-socket.on('user-disconnected', () => {
-    if(marker[id]){
-        map.removeLayer(marker[id]);
-        delete marker[id];  
-    }
-
+socket.on("user-disconnected", (disconnectedId) => {
+  if (markers[disconnectedId]) {
+    map.removeLayer(markers[disconnectedId]);
+    delete markers[disconnectedId];
+  }
 });
