@@ -10,12 +10,19 @@ const io = socket(server);
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
+let userCount = 0;
+
 io.on("connection", (socket) => {
+  userCount++;
+  io.emit("userCountUpdate", userCount);
+
   socket.on("sendLocation", (data) => {
     io.emit("receiveLocation", { id: socket.id, ...data });
   });
 
   socket.on("disconnect", () => {
+    userCount--;
+    io.emit("userCountUpdate", userCount);
     io.emit("user-disconnected", socket.id);
   });
 });

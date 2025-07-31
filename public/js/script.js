@@ -43,3 +43,7 @@ socket.on("user-disconnected", (disconnectedId) => {
     delete markers[disconnectedId];
   }
 });
+
+socket.on("userCountUpdate", (count) => {
+  document.title = `TrackSnap - ${count} users online`;
+});
