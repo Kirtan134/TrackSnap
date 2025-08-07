@@ -6,12 +6,14 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "build": "tailwindcss -i public/css/style.css -o public/css/tailwind.css"
+    "build": "tailwindcss -i public/css/style.css -o public/css/tailwind.css",
+    "lint": "echo \"No linting configured\" && exit 0",
+    "health": "curl -f http://localhost:3000/health || exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC", 
-  "description": "",
+  "keywords": ["real-time", "location", "tracking", "socket.io", "maps", "leaflet"],
+  "author": "Kirtan Parikh",
+  "license": "MIT", 
+  "description": "Real-time location tracking web application with interactive maps",
   "dependencies": {
     "ejs": "^3.1.10",
     "express": "^4.19.2",

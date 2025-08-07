@@ -2,26 +2,150 @@
 const socket = io();
 let currentUserId = null;
 let isDarkMode = false;
+let geolocationWatchId = null;
+
+// Show loading and status messages
+function showStatus(message, type = 'info') {
+  const statusDiv = document.createElement('div');
+  statusDiv.id = 'status-message';
+  statusDiv.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: ${type === 'error' ? '#f44336' : type === 'success' ? '#4caf50' : '#2196f3'};
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 2000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  `;
+  statusDiv.textContent = message;
+  
+  // Remove existing status message
+  const existing = document.getElementById('status-message');
+  if (existing) existing.remove();
+  
+  document.body.appendChild(statusDiv);
+  
+  // Auto remove after 5 seconds
+  setTimeout(() => {
+    if (statusDiv.parentNode) {
+      statusDiv.remove();
+    }
+  }, 5000);
+}
 
 // Get user ID when connected
 socket.on("connect", () => {
   currentUserId = socket.id;
+  showStatus("Connected to TrackSnap!", "success");
 });
 
-// Get user name
-let myname = prompt("Enter your name");
-if (!myname || myname.trim() === "") {
-  myname = "Anonymous User";
+socket.on("disconnect", () => {
+  showStatus("Disconnected from server. Attempting to reconnect...", "error");
+});
+
+socket.on("reconnect", () => {
+  showStatus("Reconnected to TrackSnap!", "success");
+});
+
+// Better user name input with validation
+function getUserName() {
+  let username = null;
+  while (!username || username.trim() === "") {
+    username = prompt("Enter your display name for TrackSnap:");
+    if (username === null) {
+      // User cancelled
+      alert("A display name is required to use TrackSnap.");
+      return null;
+    }
+    if (username.trim() === "") {
+      alert("Please enter a valid name.");
+    }
+  }
+  return username.trim().substring(0, 20); // Limit to 20 characters
 }
 
-if (navigator.geolocation) {
-  navigator.geolocation.watchPosition((position) => {
-    const { latitude, longitude, accuracy } = position.coords;
-    socket.emit("sendLocation", { latitude, longitude, accuracy, myname });
-  });
+const myname = getUserName();
+if (!myname) {
+  showStatus("Display name is required. Please refresh to try again.", "error");
+  // Don't start geolocation if no name
+} else {
+  // Start geolocation tracking
+  startLocationTracking();
+}
+
+function startLocationTracking() {
+  if (!navigator.geolocation) {
+    showStatus("Geolocation is not supported by this browser.", "error");
+    return;
+  }
+
+  showStatus("Requesting location access...", "info");
+
+  // Get initial position
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      showStatus("Location access granted!", "success");
+      const { latitude, longitude, accuracy } = position.coords;
+      socket.emit("sendLocation", { latitude, longitude, accuracy, myname });
+      
+      // Start watching position
+      geolocationWatchId = navigator.geolocation.watchPosition(
+        (position) => {
+          const { latitude, longitude, accuracy } = position.coords;
+          socket.emit("sendLocation", { latitude, longitude, accuracy, myname });
+        },
+        handleLocationError,
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 5000
+        }
+      );
+    },
+    handleLocationError,
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 60000
+    }
+  );
+}
+
+function handleLocationError(error) {
+  let message = "Location error: ";
+  switch(error.code) {
+    case error.PERMISSION_DENIED:
+      message += "Location access denied. Please enable location sharing.";
+      break;
+    case error.POSITION_UNAVAILABLE:
+      message += "Location information unavailable.";
+      break;
+    case error.TIMEOUT:
+      message += "Location request timed out.";
+      break;
+    default:
+      message += "An unknown error occurred.";
+      break;
+  }
+  showStatus(message, "error");
 }
 
 const map = L.map("map").setView([0, 0], 10);
+
+// Hide loading screen once map is ready
+function hideLoading() {
+  const loading = document.getElementById('loading');
+  if (loading) {
+    loading.style.opacity = '0';
+    loading.style.transition = 'opacity 0.5s ease';
+    setTimeout(() => {
+      loading.remove();
+    }, 500);
+  }
+}
 
 // Map layers for light and dark mode
 const lightLayer = L.tileLayer(
@@ -32,6 +156,10 @@ const darkLayer = L.tileLayer(
 );
 
 lightLayer.addTo(map);
+
+// Hide loading when map tiles load
+map.on('load', hideLoading);
+setTimeout(hideLoading, 3000); // Fallback timeout
 
 // Dark mode toggle function
 function toggleDarkMode() {
@@ -137,6 +265,8 @@ socket.on("receiveLocation", (data) => {
   // Center map on current user
   if (id === currentUserId) {
     map.setView([latitude, longitude], 15);
+    // Hide loading screen when first location is received
+    hideLoading();
   }
 
   // Update or create marker
@@ -197,6 +327,28 @@ socket.on("user-disconnected", (disconnectedId) => {
   // Remove from user locations and update list
   delete userLocations[disconnectedId];
   updateUserList();
+});
+
+// Handle socket errors
+socket.on("error", (error) => {
+  showStatus(`Connection error: ${error}`, "error");
+});
+
+socket.on("connect_error", (error) => {
+  showStatus("Failed to connect to server", "error");
+});
+
+// Handle application errors
+window.addEventListener('error', (event) => {
+  console.error('Application error:', event.error);
+  showStatus("An unexpected error occurred", "error");
+});
+
+// Cleanup function for page unload
+window.addEventListener('beforeunload', () => {
+  if (geolocationWatchId) {
+    navigator.geolocation.clearWatch(geolocationWatchId);
+  }
 });
 
 // Update page title with user count

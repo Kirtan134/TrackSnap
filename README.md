@@ -1,73 +1,180 @@
 
-# TrackSnap
+# TrackSnap 🗺️
 
-**Track and share your location in real-time.**
+**Real-time location tracking and sharing web application**
 
-## Description
+[![Live Demo](https://img.shields.io/badge/demo-live-green.svg)](https://tracksnap.vercel.app)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node.js-16+-green.svg)](https://nodejs.org)
 
-TrackSnap allows you to see the real-time locations of all active users on this server. Please note, no data is stored or cached on our end. Location is updated every 5 seconds for precise tracking. This feature is purely for demonstration purposes.
+## 🚀 Overview
 
-## Table of Contents
+TrackSnap is a modern, real-time location tracking web application that allows users to share their locations on an interactive map. Built with Node.js, Socket.io, and Leaflet maps, it demonstrates real-time web technologies and geolocation APIs in action.
 
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Technologies](#technologies)
-- [License](#license)
-- [Contributing](#contributing)
-- [Acknowledgements](#acknowledgements)
+### ✨ Key Features
 
-## Features
+- **Real-time Location Tracking** - See live positions of all connected users
+- **Interactive Maps** - Powered by Leaflet with dark/light mode toggle
+- **GPS Accuracy Indicators** - Visual representation of location precision
+- **Distance Calculations** - See how far other users are from you
+- **Responsive Design** - Works seamlessly on desktop and mobile devices
+- **Privacy-Focused** - No data storage or caching
+- **User-Friendly** - Intuitive interface with error handling
 
-- Real-time location tracking of all active users
-- Location updates every 5 seconds
-- No data storage or caching
-- Interactive map using Leaflet
+## 🛠️ Technologies Used
 
-## Installation
+### Backend
+- **Node.js** - JavaScript runtime environment
+- **Express.js** - Fast, unopinionated web framework
+- **Socket.io** - Real-time bidirectional event-based communication
+
+### Frontend
+- **Leaflet** - Open-source JavaScript library for interactive maps
+- **EJS** - Embedded JavaScript templating engine
+- **Vanilla JavaScript** - Modern ES6+ features
+- **CSS3** - Modern styling with animations and responsiveness
+
+### DevOps & Deployment
+- **Vercel** - Serverless deployment platform
+- **npm** - Package management
+
+## 📋 Prerequisites
+
+Before running this application, make sure you have:
+
+- Node.js (v16 or higher)
+- npm (comes with Node.js)
+- Modern web browser with geolocation support
+
+## 🚀 Quick Start
 
 1. **Clone the repository**
-    ```sh
-    git clone https://github.com/yourusername/tracksnap.git
-    cd tracksnap
-    ```
+   ```bash
+   git clone https://github.com/Kirtan134/TrackSnap.git
+   cd TrackSnap
+   ```
 
 2. **Install dependencies**
-    ```sh
-    npm install
-    ```
+   ```bash
+   npm install
+   ```
 
-3. **Run the server**
-    ```sh
-    node app.js
-    ```
+3. **Start the development server**
+   ```bash
+   npm start
+   ```
+   
+   Or for development with auto-reload:
+   ```bash
+   npm run dev
+   ```
 
-## Usage
+4. **Open your browser**
+   Navigate to `http://localhost:3000`
 
-1. Open your browser and navigate to `http://localhost:3000`.
-2. Allow location access when prompted.
-3. See the real-time locations of all active users on the interactive map.
+## 🎯 Usage
 
-## Technologies
+1. **Access the Application**: Open the app in your web browser
+2. **Allow Location Access**: Grant permission when prompted for geolocation
+3. **Enter Display Name**: Provide a name that other users will see
+4. **View Real-time Map**: See your location and other active users
+5. **Interact with Map**: 
+   - Toggle between light/dark map themes
+   - Click on user names to center map on their location
+   - View accuracy circles around each user's position
 
-- **Node.js**: JavaScript runtime environment
-- **Express.js**: Web framework for Node.js
-- **Socket.io**: Real-time, bidirectional and event-based communication
-- **Leaflet**: Open-source JavaScript library for mobile-friendly interactive maps
-- **EJS**: Embedded JavaScript templating
+## 🏗️ Project Structure
 
-## License
+```
+TrackSnap/
+├── public/                 # Static assets
+│   ├── css/               
+│   │   └── style.css      # Main stylesheet
+│   ├── js/                
+│   │   └── script.js      # Client-side JavaScript
+│   └── images/            # Static images
+├── views/                 # EJS templates
+│   ├── index.ejs          # Main app page
+│   └── landing.ejs        # Landing page
+├── app.js                 # Main server file
+├── package.json           # Project configuration
+└── vercel.json           # Deployment configuration
+```
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+## 🔧 Configuration
 
-## Contributing
+### Environment Variables
 
-Contributions are welcome! Please open an issue or submit a pull request for any changes.
+The application uses the following environment variables:
 
-## Acknowledgements
+- `PORT` - Server port (default: 3000)
 
-- Thanks to the developers of [Node.js](https://nodejs.org/), [Express.js](https://expressjs.com/), [Socket.io](https://socket.io/), [Leaflet](https://leafletjs.com/), and [EJS](https://ejs.co/) for their great tools and libraries.
+### Socket.io Events
 
-## Notice
+- `sendLocation` - Client sends location data
+- `receiveLocation` - Server broadcasts location to all clients
+- `userCountUpdate` - Updates connected user count
+- `user-disconnected` - Handles user disconnection
 
-Please be aware that the free web service on Render spins down if it goes 15 minutes without receiving any inbound traffic. When the service receives a new request, it will spin back up, which can take up to a minute. During this time, you may experience a noticeable delay, such as a browser page load hanging temporarily.
+## 🌐 Deployment
+
+### Vercel (Recommended)
+
+1. Fork this repository
+2. Connect your Vercel account to GitHub
+3. Import the project and deploy
+
+### Manual Deployment
+
+1. Build the application: `npm run build` (if applicable)
+2. Set environment variables on your hosting platform
+3. Deploy the app with `npm start`
+
+## 🔒 Privacy & Security
+
+- **No Data Persistence**: Location data is not stored in any database
+- **Session-Based**: Data exists only during active sessions
+- **Client-Side Privacy**: Users control their location sharing
+- **HTTPS Recommended**: Use HTTPS in production for secure geolocation
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👨‍💻 Author
+
+**Kirtan Parikh**
+- GitHub: [@Kirtan134](https://github.com/Kirtan134)
+- Portfolio: [Coming Soon]
+
+## 🙏 Acknowledgments
+
+- [Leaflet](https://leafletjs.com/) for the amazing mapping library
+- [Socket.io](https://socket.io/) for real-time communication
+- [Express.js](https://expressjs.com/) for the web framework
+- [OpenStreetMap](https://www.openstreetmap.org/) for map tiles
+
+## 📊 Demo
+
+🔗 **Live Demo**: [https://tracksnap.vercel.app](https://tracksnap.vercel.app)
+
+### Features in Action
+- Real-time location updates every 5 seconds
+- Interactive map with zoom and pan capabilities
+- User list with click-to-center functionality
+- Dark/light mode toggle for better user experience
+- Mobile-responsive design for all devices
+
+---
+
+⚠️ **Note**: This application is designed for demonstration purposes. Location data is transmitted in real-time but not stored permanently. The free hosting service may spin down after 15 minutes of inactivity and can take up to a minute to restart.
