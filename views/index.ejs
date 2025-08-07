@@ -2,9 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TrackSnap</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>TrackSnap - Live Location Map</title>
+    <meta name="description" content="View real-time locations of active users on an interactive map with TrackSnap." />
     <link rel="stylesheet" href="/css/style.css" />
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
     <link
       rel="stylesheet"
@@ -20,30 +22,39 @@
         right: 10px;
         background: white;
         padding: 10px;
-        border-radius: 5px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
         max-width: 200px;
         z-index: 1000;
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
       }
+      
       .user-item {
-        padding: 5px;
+        padding: 8px;
         cursor: pointer;
         border-bottom: 1px solid #eee;
+        border-radius: 4px;
+        transition: background-color 0.2s ease;
+        font-size: 0.9em;
       }
+      
       .user-item:hover {
-        background: #f0f0f0;
+        background: #f8f9fa;
       }
+      
       .user-item.current-user {
         font-weight: bold;
-        color: #007cba;
+        color: #667eea;
+        background: rgba(102, 126, 234, 0.1);
       }
 
       #darkModeToggle {
         position: fixed;
         top: 80px;
         left: 10px;
-        background: white;
-        border: 2px solid #333;
+        background: rgba(255, 255, 255, 0.95);
+        border: 2px solid #ddd;
         border-radius: 50%;
         width: 50px;
         height: 50px;
@@ -53,11 +64,56 @@
         align-items: center;
         justify-content: center;
         z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
       }
 
       #darkModeToggle:hover {
-        background: #f0f0f0;
+        background: rgba(248, 249, 250, 0.95);
+        transform: scale(1.05);
+      }
+      
+      /* Mobile responsive adjustments */
+      @media (max-width: 768px) {
+        #userList {
+          top: 10px;
+          right: 10px;
+          max-width: 150px;
+          padding: 8px;
+        }
+        
+        .user-item {
+          padding: 6px;
+          font-size: 0.8em;
+        }
+        
+        #darkModeToggle {
+          width: 40px;
+          height: 40px;
+          font-size: 16px;
+          top: 70px;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        #userList {
+          max-width: 120px;
+          padding: 6px;
+        }
+        
+        .user-item {
+          padding: 5px;
+          font-size: 0.75em;
+        }
+        
+        #darkModeToggle {
+          width: 35px;
+          height: 35px;
+          font-size: 14px;
+          top: 60px;
+          left: 8px;
+        }
       }
     </style>
   </head>
