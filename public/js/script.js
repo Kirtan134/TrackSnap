@@ -135,6 +135,18 @@ function handleLocationError(error) {
 
 const map = L.map("map").setView([0, 0], 10);
 
+// Hide loading screen once map is ready
+function hideLoading() {
+  const loading = document.getElementById('loading');
+  if (loading) {
+    loading.style.opacity = '0';
+    loading.style.transition = 'opacity 0.5s ease';
+    setTimeout(() => {
+      loading.remove();
+    }, 500);
+  }
+}
+
 // Map layers for light and dark mode
 const lightLayer = L.tileLayer(
   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -144,6 +156,10 @@ const darkLayer = L.tileLayer(
 );
 
 lightLayer.addTo(map);
+
+// Hide loading when map tiles load
+map.on('load', hideLoading);
+setTimeout(hideLoading, 3000); // Fallback timeout
 
 // Dark mode toggle function
 function toggleDarkMode() {
@@ -249,6 +265,8 @@ socket.on("receiveLocation", (data) => {
   // Center map on current user
   if (id === currentUserId) {
     map.setView([latitude, longitude], 15);
+    // Hide loading screen when first location is received
+    hideLoading();
   }
 
   // Update or create marker
